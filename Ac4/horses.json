@@ -1,0 +1,17 @@
+[
+  {
+    "nom": "Torpedo",
+    "velocitat_minima": 18,
+    "velocitat_maxima": 20
+  },
+  {
+    "nom": "Ventisca",
+    "velocitat_minima": 19,
+    "velocitat_maxima": 21
+  },
+  {
+    "nom": "Bicicleta",
+    "velocitat_minima": 20,
+    "velocitat_maxima": 20
+  }
+]

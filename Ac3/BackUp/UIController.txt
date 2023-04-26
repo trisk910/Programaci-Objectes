@@ -1,0 +1,83 @@
+package Presentation;
+
+import Business.GameManager;
+import Business.Peli;
+import Business.PlayerWithScore;
+import Persistance.PlayerScoreListDAO;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class UIController {
+    private MainMenu mainMenu;
+
+    private GameManager gameManager;
+
+    public UIController(MainMenu mainMenu, GameManager gameManager) {
+        this.mainMenu = mainMenu;
+        this.gameManager = gameManager;
+    }
+
+    public void startQuiz () {
+        String name;
+        mainMenu.Show();
+
+        Scanner scn = new Scanner(System.in);
+        try {
+            name = scn.nextLine();
+        } catch (Exception e) {
+            return;
+        }
+        int playerFound = PlayerScoreListDAO.checkPlayerName(name);
+        if(playerFound==1)
+            System.out.println("Oh! you wanna try again?");
+        else {
+            System.out.println("Oh! A new Player!");
+            System.out.println("Would you liek to save score? (Y/N)");
+            String answer = scn.nextLine();
+            if(answer.equals("Y")) {
+                PlayerScoreListDAO.addPlayerWithScore(name, 0);
+            }
+            if(answer.equals("N")) {
+                PlayerScoreListDAO.addPlayer(name);
+            }
+        }
+        int currentQuestion = 1;
+        boolean failed = false;
+        String answer;
+        int playerScore = 0;
+        while(!failed) {
+            ArrayList<Peli> peliArrayList = gameManager.getQuestionsArrayList();
+            System.out.println();
+            System.out.println("----- QUESTION " + currentQuestion + " -----");
+            System.out.println("Which movie recieved better ratings?");
+            System.out.println("A) " + peliArrayList.get(0).getTitle());
+            System.out.println("B) " + peliArrayList.get(1).getTitle());
+            float scoreTitle1 = peliArrayList.get(0).getScore();
+            float scoreTitle2 = peliArrayList.get(0).getScore();
+            String correctAnswer;
+            if(scoreTitle1>scoreTitle2)
+                correctAnswer = "A";
+            else
+                correctAnswer = "B";
+            System.out.println("Your answer: ");
+            answer = scn.nextLine();
+            if (answer.equals(correctAnswer)) {
+                System.out.println("Correct!");
+                playerScore++;
+            } else {
+                System.out.println("Incorrect! I am sorry " + PlayerWithScore.getName() + " you're eliminated!");
+                failed = true;
+            }
+            System.out.println(peliArrayList.get(0).getTitle()+": "+peliArrayList.get(0).getScore());
+            System.out.println(peliArrayList.get(1).getTitle()+": "+peliArrayList.get(1).getScore());
+            currentQuestion++;
+
+            peliArrayList = gameManager.getQuestionsArrayList();
+            System.out.println();
+            System.out.println("----- QUESTION " + currentQuestion + " -----");
+            System.out.println("Which movie recieved better ratings?");
+
+        }
+    }
+}
